@@ -65,34 +65,25 @@ const images = [
 ];
 
 
-document.getElementById("no-download").addEventListener("click", function prevtDownload(event){
-    event.preventDefault();
-    window.open(this.href, "_blank");
-    
+document.querySelectorAll(".gallery-link").forEach(link => {
+    link.addEventListener("click", function(event) {
+        // Запобігаємо стандартному переходу за посиланням
+        event.preventDefault();
+
+        // Отримуємо велике зображення з атрибута data-source
+        const largeImageUrl = this.querySelector('img').dataset.source;
+
+        // Виводимо посилання на велике зображення в консоль (можна видалити цей рядок)
+        console.log(largeImageUrl);
+
+        // Використовуємо бібліотеку basicLightbox для створення модального вікна
+        const instance = basicLightbox.create(`
+            <img src="${largeImageUrl}" alt="Large image" />
+        `);
+
+        // Відкриваємо модальне вікно
+        instance.show();
+    });
 });
 
-// Отримуємо елемент контейнера галереї
-const gallery = document.querySelector('.gallery');
-
-// Додаємо обробник події на контейнер галереї
-gallery.addEventListener('click', function(event) {
-  // Перевіряємо, чи був клік на <a> елемент
-  const clickedElement = event.target;
-  
-  // Якщо клік був на <a> або на <img> всередині <a>
-  if (clickedElement.closest('.gallery-link')) {
-    // Отримуємо велике зображення з атрибута data-source <img>
-    const largeImageUrl = clickedElement.closest('.gallery-link').querySelector('img').dataset.source;
-
-    // Виводимо посилання на велике зображення в консоль
-      console.log(largeImageUrl);
-      // Використовуємо бібліотеку basicLightbox для створення модального вікна
-    const instance = basicLightbox.create(`
-      <img src="${largeImageUrl}" alt="Large image" />
-    `);
-
-    // Відкриваємо модальне вікно
-    instance.show();
-  }
-});
 
