@@ -65,25 +65,50 @@ const images = [
 ];
 
 
-document.querySelectorAll(".gallery-link").forEach(link => {
-    link.addEventListener("click", function(event) {
-        // Запобігаємо стандартному переходу за посиланням
-        event.preventDefault();
+const gallery = document.querySelector('.gallery');
 
-        // Отримуємо велике зображення з атрибута data-source
-        const largeImageUrl = this.querySelector('img').dataset.source;
+function createGalleryItem(images) {
 
-        // Виводимо посилання на велике зображення в консоль (можна видалити цей рядок)
-        console.log(largeImageUrl);
+    let items = [];
 
-        // Використовуємо бібліотеку basicLightbox для створення модального вікна
-        const instance = basicLightbox.create(`
-            <img src="${largeImageUrl}" alt="Large image" />
-        `);
+    for (const {preview, original, description} of images) {
+        const item = `
+        <li class="gallery-item">
+  <a class="gallery-link" href="${original}">
+    <img
+      class="gallery-image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+    />
+  </a>
+</li>
+        `
+        items.push(item);
+    }
 
-        // Відкриваємо модальне вікно
-        instance.show();
-    });
-});
+    gallery.insertAdjacentHTML('afterbegin', items.join(''));
+}
 
+createGalleryItem(images);
 
+gallery.addEventListener('click', showBiggerImage);
+
+function showBiggerImage(event) {
+    event.preventDefault();
+
+    if (event.target.classList.contains('gallery-image')) {
+        const bigImage = basicLightbox.create(`
+            <img
+            class="big-image"
+      src="${event.target.dataset.source}"
+      alt="${event.target.alt}"
+      width="1112"
+      height="640"
+    />
+            `)
+        bigImage.show();
+
+    }
+
+}
